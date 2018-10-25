@@ -25,9 +25,10 @@ socket.on('slice upload', (data) => {
 
     //convert the ArrayBuffer to Buffer
     data.data = new Buffer(new Uint8Array(data.data));
-    //save the data
-    files[data.name].data.push(data.data);
+  
     files[data.name].slice++;
+    var fileBuffer = Buffer.concat([data.data]);
+fs.writeFile('./'+data.name,fileBuffer,function(err){})
 
     if (files[data.name].slice * 100000 >= files[data.name].size) {
         //do something with the data
@@ -38,17 +39,13 @@ socket.on('slice upload', (data) => {
         });
     }
     if (files[data.name].slice * 100000 >= files[data.name].size) {
-        var fileBuffer = Buffer.concat(files[data.name].data);
+        // var fileBuffer = Buffer.concat(files[data.name].data);
   console.log("1111111111111111",data.name)
-        // fs.write(data.name, fileBuffer, (err) => {
-        //     delete files[data.name];
-        //     if (err) return socket.emit('upload error');
-        //     socket.emit('end upload');
-        // });
-        fs.writeFile('./'+data.name,fileBuffer,function(err){
+
+        // fs.writeFile('./'+data.name,fileBuffer,function(err){
       //console.log("DONE");
       socket.emit('upload-completed')
-    });
+    // });
     }
 });
 })
